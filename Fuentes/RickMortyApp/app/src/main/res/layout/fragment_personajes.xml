@@ -6,9 +6,10 @@
     tools:context=".PersonajesFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ListView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Yo soy personajes papu" />
+        android:layout_height="wrap_content"
+        android:id="@+id/lista_personajes"
+        ></ListView>
 
 </FrameLayout>
