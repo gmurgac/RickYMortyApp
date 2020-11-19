@@ -53,34 +53,36 @@ public class PersonajesFragment extends Fragment {
         this.listViewPer = getView().findViewById(R.id.lista_personajes);
         this.adaptador = new PersonajesListAdapter(this.getActivity(), R.layout.list_personajes, this.personajes);
         this.listViewPer.setAdapter(this.adaptador);
+        this.personajes.clear();
 
-        JsonObjectRequest jsonReq = new JsonObjectRequest(Request.Method.GET, "https://rickandmortyapi.com/api/character"
-                , null
-                , new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                try {
-                    personajes.clear();
-                    Personaje[] personajeObt = new Gson().fromJson(response.getString("results"), Personaje[].class);
-                    personajes.addAll(Arrays.asList(personajeObt));
-                } catch (Exception e) {
+        for (int i = 1; i < 10; i++) {
+            JsonObjectRequest jsonReq = new JsonObjectRequest(Request.Method.GET, "https://rickandmortyapi.com/api/character/?page="+i
+                    , null
+                    , new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+
+                        Personaje[] personajeObt = new Gson().fromJson(response.getString("results"), Personaje[].class);
+                        personajes.addAll(Arrays.asList(personajeObt));
+                    } catch (Exception e) {
+                        personajes = null;
+                    } finally {
+                        adaptador.notifyDataSetChanged();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
                     personajes = null;
-                } finally {
                     adaptador.notifyDataSetChanged();
                 }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                personajes = null;
-                adaptador.notifyDataSetChanged();
-            }
 
-        });
-        queue.add(jsonReq);
+            });
+            queue.add(jsonReq);
 
+        }
     }
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
